@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Odibee+Sans&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Odibee Sans", cursive;
+}
+
+body {
+  margin: 0;
+  background-image: url("./img/fondo-dekstop.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+main {
+  padding: 0 8%;
+}
+
+.title {
+  margin: 6vh 8% 50px;
+  text-align: center;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.loginFormContainer,
+.signupFormContainer {
+  margin-top: 6vh;
+  display: none;
+}
+
+.loginForm,
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  margin: 4vh auto 0;
+  align-items: start;
+  width: 80%;
+  max-width: 300px;
+}
+
+.loginForm label:not(.rememberLabel),
+.signupForm label {
+  display: block;
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 2vh;
+}
+
+.rememberLabel {
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 2vh;
+}
+
+.rememberInput {
+  width: 20px;
+  height: 20px;
+}
+
+.loginForm input:not(.rememberInput),
+.signupForm input {
+  width: 100%;
+  border-radius: 4px;
+  font-size: 24px;
+  padding: 5px 5%;
+}
+
+#buttonFormLogin,
+#buttonFormSignup {
+  margin: 3vh auto 0;
+  cursor: pointer;
+  padding: 0 30px;
+  height: 70px;
+  background-color: #006cfc;
+  border-radius: 15px;
+  border: solid #001997 6px;
+  font-family: "Odibee Sans", cursive;
+}
