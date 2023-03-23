@@ -57,6 +57,7 @@ const state = {
                     mail: currentState.mail
                 })
             }).then(res => {
+                console.log(API_BASE_URL);
                 console.log(res);
                 return res.json();
             }).then(data => {
