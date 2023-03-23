@@ -1,6 +1,6 @@
 import { rtdb } from "./rtdb";
 import { ref, onValue, get } from "firebase/database";
-const API_BASE_URL = process.env.PORT || "http://127.0.0.1:3000";
+const API_BASE_URL = process.env.DATABASE_URL || "http://127.0.0.1:3000";
 type Plays = "rock" | "paper" | "scissors";
 
 const state = {
