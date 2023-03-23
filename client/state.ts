@@ -57,8 +57,10 @@ const state = {
                     mail: currentState.mail
                 })
             }).then(res => {
+                console.log(res);
                 return res.json();
             }).then(data => {
+                console.log(data);
                 currentState.userId = data.id;
                 currentState.userName = data.name;
                 this.setState(currentState);
