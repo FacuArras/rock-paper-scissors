@@ -11,6 +11,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+console.log("Hola desde el server");
+
+
 const usersCollectionRef = firestore.collection("users");
 const roomsCollectionRef = firestore.collection("rooms");
 

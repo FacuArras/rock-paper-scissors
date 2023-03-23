@@ -3,3 +3,6 @@ dist
 .parcel-cache
 index.js
 db.js
+.env
+dev.ts
+key.json
