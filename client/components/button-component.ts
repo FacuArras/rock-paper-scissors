@@ -20,6 +20,8 @@ class ButtonComponent extends HTMLElement {
                     border: solid #001997 6px;
                     font-family: "Odibee Sans", cursive;
                     cursor: pointer;
+                    margin: 0 auto;
+                    display: block
                 }
             `;
 

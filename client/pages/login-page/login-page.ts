@@ -4,10 +4,6 @@ import { state } from "../../state";
 class LoginPage extends HTMLElement {
     connectedCallback() {
         this.render();
-
-        this.querySelector(".loginForm")?.addEventListener("submit", e => {
-
-        });
     };
     addListeners() {
         const buttonLoginEl = this.querySelector("#buttonLogin") as any;
@@ -28,6 +24,7 @@ class LoginPage extends HTMLElement {
                 const target = e.target as any;
 
                 if (target.mail.value === target["confirm-mail"].value && target.mail.value.length > 0) {
+                    state.spinnerLoading()
                     state.setMail(target.mail.value);
                     state.login(() => {
                         console.log(state.getState());
@@ -38,24 +35,6 @@ class LoginPage extends HTMLElement {
                 };
             });
         });
-
-        const serviceAccount = {
-            type: "service_account",
-            project_id: process.env.FIREBASE_PROJECT_ID,
-            private_key_id: process.env.FIREBASE_KEY_ID,
-            private_key: process.env.FIREBASE_PRIVATE_KEY,
-            client_email: process.env.FIREBASE_CLIENT_MAIL,
-            client_id: process.env.FIREBASE_CLIENT_ID,
-            auth_uri: process.env.FIREBASE_AUTH_URI,
-            token_uri: process.env.FIREBASE_TOKEN_URI,
-            auth_provider_x509_cert_url: process.env.FIREBASE_CERT,
-            client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT,
-        };
-
-        console.log(serviceAccount);
-        console.log(process.env.PORT);
-
-
 
         buttonSignupEl!.addEventListener("click", e => {
             const signupFormContainerEl = this.querySelector(".signupFormContainer") as any;
@@ -71,6 +50,7 @@ class LoginPage extends HTMLElement {
                 const target = e.target as any;
 
                 if (target.mail.value === target["confirm-mail"].value && target.mail.value.length > 0) {
+                    state.spinnerLoading();
                     state.setMail(target.mail.value);
                     state.setName(target.name.value);
                     state.signup(() => {
@@ -93,8 +73,10 @@ class LoginPage extends HTMLElement {
                 <br>
                 <text-comp type="title">Tijeras</text-comp>
             </div>
-            <button-comp id="buttonLogin" class="button">Iniciar sesión</button-comp>
-            <button-comp id="buttonSignup" class="button">Registrarse</button-comp>
+            <div class="button-container">
+                <button-comp id="buttonLogin" class="button">Iniciar sesión</button-comp>
+                <button-comp id="buttonSignup" class="button">Registrarse</button-comp>
+            </div>
             
 
             <div class="loginFormContainer">
@@ -121,13 +103,13 @@ class LoginPage extends HTMLElement {
                 <text-comp type="bodyText" class="signupTitle">Bienvenido!</text-comp>
                 <form class="signupForm">
                     <label for="name">Nombre:</label>
-                    <input type="text" name="name" required>
+                    <input type="text" name="name" maxlength="15" required>
 
                     <label for="mail">Correo electrónico:</label>
-                    <input type="email" name="mail" reqiured>
+                    <input type="email" name="mail" required>
                     
                     <label for="confirm-mail">Confirmar correo electrónico:</label>
-                    <input type="email" name="confirm-mail" reqiured>
+                    <input type="email" name="confirm-mail" required>
 
                     <button type="submit" id="buttonFormSignup">
                         <text-comp type="button">Registrarse</text-comp>

@@ -42,7 +42,7 @@ class HandsComponent extends HTMLElement {
                 gap: 6%;
                 align-items: flex-end;
                 position: absolute;
-                top: 0;
+                top: -15px;
                 right: 0;
                 left: 0;
                 rotate: 180deg;
@@ -56,6 +56,7 @@ class HandsComponent extends HTMLElement {
                 bottom: -10px;
                 right: 0;
                 left: 0;
+                cursor: pointer;
             }
             .hand {
                 height: 20vh;
