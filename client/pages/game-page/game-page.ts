@@ -5,24 +5,38 @@ type Plays = "rock" | "paper" | "scissors" | "";
 class GamePage extends HTMLElement {
     play: Plays = "";
     connectedCallback() {
-        /* Me quedo escuchando a los cambios que se producen en la play del oponente en la firebase */
-        state.getOpponentPlay();
-        this.render();
+        const currentState = state.getState();
+
+        /* Verifico que el usuario haya iniciado sesión y haya entrado en una room antes de  
+             entrar a esta página, si no lo hizo lo redirecciono a su respectiva página.*/
+        if (currentState.userId.length > 1) {
+            if (currentState.currentGame.roomId.length > 1) {
+                /* Me quedo escuchando a la firebase con la función "getOpponentPlay" para escuchar la jugada del oponente. */
+                state.getOpponentPlay();
+                this.render();
+            } else {
+                Router.go("/home");
+                console.error("Ocurrió un error al entrar en la room.");
+            };
+        } else {
+            Router.go("/login");
+            console.error("Ocurrió un error en el inicio de sesión.");
+        };
     };
 
     addListeners() {
-        /* Obtengo las manos para poder darle un estilo inicial de "noSeleccionada", así se ven grises */
+        /* Obtengo las manos para poder darle un estilo inicial de "noSeleccionada", así se ven grises. */
         const playerHands = this.querySelector(".playerHands")?.shadowRoot?.querySelectorAll(".hand");
-        const computerHands = this.querySelector(".computerHands")?.shadowRoot?.querySelectorAll(".hand");
+        const opponentHands = this.querySelector(".opponentHands")?.shadowRoot?.querySelectorAll(".hand");
         for (const h of playerHands!) {
             h.classList.add("noSeleccionada");
         };
-        for (const h of computerHands!) {
+        for (const h of opponentHands!) {
             h.classList.add("noSeleccionada");
         };
 
         /* Obtengo nuevamente las manos para que al hacerles click se vean como seleccionadas,
-            además de guardar en la propiedad "play" la jugada seleccionada */
+            además de guardar en la propiedad "play" la jugada seleccionada. */
         this.querySelector(".playerHands")?.shadowRoot?.querySelector(".playerHands")?.addEventListener("click", e => {
             const target = e.target as any;
             const scissors = this.querySelector(".playerHands")?.shadowRoot?.querySelector("#scissors");
@@ -48,7 +62,7 @@ class GamePage extends HTMLElement {
     };
 
     /* Inicializo el timer para que pasados poco más de 3 segundos, guarde la jugada seleccionada y muestre las manos 
-        elegidas de ambos jugadores, además de redireccionar a la página de resultados.  */
+        elegidas de ambos jugadores, además de redireccionar a la página de "/result".  */
     counterTimer(counterEl) {
         let counterNum = 0;
 
@@ -64,36 +78,38 @@ class GamePage extends HTMLElement {
                     const interValForOpponent = setInterval(() => {
                         const currentState = state.getState();
                         const currentOpponentPlay = currentState.currentGame.opponentPlay;
-                        if (currentOpponentPlay !== "") {
-                            console.log("Jugada del oponente desde gamePage 2: " + currentState.currentGame.opponentPlay);
+                        if (currentOpponentPlay !== "" && currentState.currentGame.playerPlay !== "") {
                             clearInterval(interValForOpponent);
-                            const found = document.querySelector(".computerHands")?.shadowRoot?.querySelector("#" + currentOpponentPlay);
+                            const found = document.querySelector(".opponentHands")?.shadowRoot?.querySelector("#" + currentOpponentPlay);
                             found?.classList.add("seleccionada");
                         };
-                    }, 1000)
+                    }, 1000);
 
-                    /* Agrego otro intervalo de tiempo para que se muestren ambas jugadas por 1 segundo y medio */
+                    /* Agrego otro intervalo de tiempo para que se muestren ambas jugadas por 3 segundo y medio. */
                     const anotherInterval = setInterval(() => {
                         state.spinnerLoading();
                         Router.go("/result");
                         clearInterval(anotherInterval);
-                    }, 3500)
+                    }, 3500);
                 });
-            }
+            };
         }, 1500);
     };
 
     render() {
-        const spinnerContainer = document.getElementById("spinner-container");
-        spinnerContainer!.classList.add("loaded");
-
         this.innerHTML = `
-            <hands-comp type="bigHand" class="computerHands"></hands-comp> 
+            <hands-comp type="bigHand" class="opponentHands"></hands-comp> 
             <div class="counter-cont">0</div>
             <hands-comp type="bigHand" class="playerHands"></hands-comp>
         `;
 
         this.counterTimer(this.querySelector(".counter-cont"));
+
+        /* Al activarse la función render y haber ejecutado y descargado el html quito el spinner
+             para revelar el contenido de la página. */
+        const spinnerContainer = document.getElementById("spinner-container");
+        spinnerContainer!.classList.add("loaded");
+
         this.addListeners();
     };
 };

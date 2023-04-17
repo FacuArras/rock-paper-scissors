@@ -1,0 +1,16 @@
+.joinGameForm {
+  display: none;
+  flex-direction: column;
+  margin: 0 auto;
+  align-items: center;
+  width: 80%;
+  max-width: 300px;
+}
+
+.roomIdInput {
+  text-align: center;
+  width: 60%;
+  border-radius: 6px;
+  font-size: 42px;
+  padding: 10px 5%;
+}

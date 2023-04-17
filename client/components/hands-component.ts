@@ -36,7 +36,7 @@ class HandsComponent extends HTMLElement {
         }
 
         style.innerHTML = `  
-            .computerHands{
+            .opponentHands{
                 display: flex;
                 justify-content: center;
                 gap: 6%;
@@ -47,7 +47,8 @@ class HandsComponent extends HTMLElement {
                 left: 0;
                 rotate: 180deg;
             }
-            .playerHands {
+            .playerHands,
+            .menuHands {
                 display: flex;
                 justify-content: center;
                 gap: 6%;
@@ -57,6 +58,11 @@ class HandsComponent extends HTMLElement {
                 right: 0;
                 left: 0;
                 cursor: pointer;
+            }
+            @media(max-height:750px){
+                .menuHands {
+                    display:none;
+                }
             }
             .hand {
                 height: 20vh;

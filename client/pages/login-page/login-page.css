@@ -1,0 +1,85 @@
+.hands-container {
+  display: flex;
+  height: 25vh;
+  width: 100%;
+  gap: 10%;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#buttonFormLogin,
+#buttonFormSignup {
+  margin: 3vh auto 0;
+  cursor: pointer;
+  padding: 0 30px;
+  height: 85px;
+  background-color: #006cfc;
+  border-radius: 15px;
+  border: solid #001997 6px;
+  font-family: "Odibee Sans", cursive;
+  font-weight: 400;
+  font-size: 40px;
+  color: #d8fcfc;
+}
+
+.rememberLabel {
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 2vh;
+}
+
+.form-error {
+  font-size: 32px;
+  font-weight: 500;
+  margin: 2vh 0 0;
+  color: #c41111;
+  display: none;
+}
+
+.rememberInput {
+  width: 20px;
+  height: 20px;
+}
+
+.loginFormContainer,
+.signupFormContainer {
+  margin-top: 6vh;
+  display: none;
+}
+
+.loginForm,
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  margin: 4vh auto 0;
+  align-items: start;
+  width: 80%;
+  max-width: 300px;
+}
+
+.loginTitle,
+.signupTitle {
+  font-weight: 600;
+  font-size: 64px;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 300px;
+}
+
+.loginForm label:not(.rememberLabel),
+.signupForm label {
+  display: block;
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 2vh;
+}
+
+.loginForm input:not(.rememberInput),
+.signupForm input {
+  width: 100%;
+  border-radius: 4px;
+  font-size: 24px;
+  padding: 5px 5%;
+}

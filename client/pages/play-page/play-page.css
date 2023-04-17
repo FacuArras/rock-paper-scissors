@@ -1,0 +1,89 @@
+.roomInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40%;
+  padding: 30px 0;
+  margin-bottom: 10vh;
+}
+
+.roomInfo__players,
+.roomInfo__room {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.roomInfo__players__player__container {
+  display: flex;
+  gap: 15px;
+}
+
+.roomInfo__players__player-ready__container,
+.roomInfo__players__opponent-ready__container {
+  background-color: #6cb46c;
+  display: none;
+  padding: 5px 15px;
+  border-radius: 6px;
+}
+
+.roomInfo__players__player--ready {
+  font-size: 18px;
+  margin: 0;
+}
+
+.roomInfo__players__player {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.roomInfo__players__opponent {
+  font-weight: 600;
+  color: #ff6442;
+  margin: 0;
+  font-size: 26px;
+}
+
+.roomInfo__roomName {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.roomInfo__roomId {
+  margin: 0;
+  font-size: 26px;
+}
+
+.roomMainText {
+  font-size: 46px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+.roomMainText__roomId {
+  font-size: 52px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.playMainText {
+  margin: 0 auto 5vh;
+  padding: 0 5%;
+  max-width: 557px;
+}
+
+#playWait {
+  display: none;
+}
+
+.counter-cont {
+  font-size: 200px;
+  font-weight: 700;
+  text-align: center;
+  transform: translateY(17vh);
+  margin-top: 20vh;
+}

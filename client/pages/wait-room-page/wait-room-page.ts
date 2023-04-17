@@ -1,41 +1,45 @@
 import { Router } from "@vaadin/router";
 import { state } from "../../state";
-import { rtdb } from "../../rtdb";
-import { ref, onValue, off } from "firebase/database";
 
 class WaitRoomPage extends HTMLElement {
     connectedCallback() {
-        this.render();
+        const currentState = state.getState();
+
+        /* Verifico que el usuario haya iniciado sesión y haya entrado en una room antes de  
+             entrar a esta página, si no lo hizo lo redirecciono a su respectiva página.*/
+        if (currentState.userId.length > 1) {
+            if (currentState.currentGame.roomId.length > 1) {
+                this.render();
+            } else {
+                Router.go("/home");
+                console.error("Ocurrió un error al entrar en la room.");
+            };
+        } else {
+            Router.go("/login");
+            console.error("Ocurrió un error en el inicio de sesión.");
+        };
     };
 
     addListeners() {
-        const roomRef = ref(rtdb, "/rooms/" + state.getState().currentGame.firebaseId + "/currentGame");
-
-        let isFirstChange = true;
-
-        onValue(roomRef, snapshot => {
-            if (isFirstChange) {
-                isFirstChange = false;
-            } else {
-                off(roomRef, "value");
-                state.spinnerLoading();
-                Router.go("/play");
-            };
-        });
+        state.getJoinGame();
     };
 
     render() {
-        const spinnerContainer = document.getElementById("spinner-container");
-        spinnerContainer!.classList.add("loaded");
         const currentState = state.getState();
+
         this.innerHTML = `
             <div class="wait-room__container">
                 <p class="roomMainText">Compartí el código</p>
                 <h2 class="roomMainText__roomId">${currentState.currentGame.roomId}</h2>
                 <p class="roomMainText">Con tu contrincante</p>
             </div>
-            <hands-comp></hands-comp>
+            <hands-comp class="menuHands"></hands-comp>
         `;
+
+        /* Al activarse la función render y haber ejecutado y descargado el html quito el spinner
+             para revelar el contenido de la página. */
+        const spinnerContainer = document.getElementById("spinner-container");
+        spinnerContainer!.classList.add("loaded");
 
         this.addListeners();
     };
