@@ -21,6 +21,9 @@ class HomePage extends HTMLElement {
         const buttonJoinGame = this.querySelector("#buttonJoinGame") as any;
         const buttonLogOut = this.querySelector("#buttonLogOut") as any;
         const joinGameForm = this.querySelector(".joinGameForm") as any;
+        const errorLoginEl = this.querySelector("#errorJoin") as any;
+        const handsContainerEl = this.querySelector(".hands-container") as any;
+        const titleEl = this.querySelector(".title") as any;
 
         buttonNewGame.addEventListener("click", e => {
             state.spinnerLoading();
@@ -30,8 +33,8 @@ class HomePage extends HTMLElement {
         });
 
         buttonJoinGame.addEventListener("click", e => {
-            buttonNewGame.style.display = "none";
             buttonJoinGame.style.display = "none";
+            buttonLogOut.style.display = "none";
             joinGameForm.style.display = "flex";
 
             joinGameForm.addEventListener("submit", e => {
@@ -39,14 +42,42 @@ class HomePage extends HTMLElement {
                 e.preventDefault();
                 state.spinnerLoading();
                 state.setRoomId(target.roomId.value);
+
                 state.joinGameRoom(() => {
-                    Router.go("/play");
+                    const currentState = state.getState();
+                    if (currentState.error === "La sala de juego está llena...") {
+                        buttonJoinGame.style.display = "none";
+                        buttonLogOut.style.display = "none";
+                        joinGameForm.style.display = "none";
+                        titleEl.style.display = "none";
+                        buttonNewGame.style.display = "none";
+                        handsContainerEl.style.display = "none";
+                        errorLoginEl.style.display = "flex";
+
+                        const spinnerContainer = document.getElementById("spinner-container");
+                        spinnerContainer!.classList.add("loaded");
+
+                        const interval = setInterval(() => {
+                            state.spinnerLoading();
+                            buttonJoinGame.style.display = "initial";
+                            buttonLogOut.style.display = "initial";
+                            titleEl.style.display = "initial";
+                            buttonNewGame.style.display = "initial";
+                            handsContainerEl.style.display = "initial";
+                            errorLoginEl.style.display = "none";
+
+                            Router.go("/login");
+                            clearInterval(interval);
+                        }, 5000);
+                    } else {
+                        Router.go("/play");
+                    }
                 });
             });
         });
 
         /* Si el usuario quiere cerrar sesión, al tocar este botón se borra toda información del usuario tanto 
-             en el local y session storage como en el state. Además de activar el spinner y redireccionar a "/login".  */
+        en el local y session storage como en el state. Además de activar el spinner y redireccionar a "/login".  */
         buttonLogOut.addEventListener("click", e => {
             const currentState = state.getState();
 
@@ -76,10 +107,13 @@ class HomePage extends HTMLElement {
                     Tijeras
                 </h1>
             </div>
-
+            <p id="errorJoin" class="roomMainText playMainText">
+                ¡Lo sentimos! La sala de juego parece estar llena...
+            </p>
             <div class="button-container">
                 <form class="joinGameForm">
                     <input type="text" name="roomId" placeholder="código" class="roomIdInput" required>
+                    <p class="form-error">La sala ya está llena</p>
                     <button type="submit" id="buttonFormLogin">¡Unirse!</button>
                 </form>
                 <button-comp id="buttonNewGame" class="button">Nuevo juego</button-comp>

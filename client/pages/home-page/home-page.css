@@ -14,3 +14,10 @@
   font-size: 42px;
   padding: 10px 5%;
 }
+
+#errorJoin {
+  display: none;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}

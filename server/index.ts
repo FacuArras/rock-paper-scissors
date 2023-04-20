@@ -8,8 +8,8 @@ import { nanoid } from "nanoid";
 const port = process.env.PORT || 3000;
 const app = express();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 const usersCollectionRef = firestore.collection("users");
 const roomsCollectionRef = firestore.collection("rooms");
@@ -35,7 +35,7 @@ app.post("/signup", (req, res) => {
                     id: documentSnapshot.id,
                     message: "El usuario ya existe."
                 });
-            })
+            });
         };
     });
 });
@@ -64,8 +64,7 @@ app.post("/login", (req, res) => {
 /* Crea una room tanto en la base de datos, como en la base de datos realtime, pidiendo el id y el nombre del usuario, devolviendo el id 
      corto de la base de datos y el id largo de la base de datos realtime. */
 app.post("/rooms", (req, res) => {
-    const { userId } = req.body;
-    const { userName } = req.body;
+    const { userId, userName } = req.body;
 
     usersCollectionRef.doc(userId.toString()).get().then(querySnapshot => {
         if (querySnapshot.exists) {
@@ -114,19 +113,17 @@ app.post("/rooms/:roomId", (req, res) => {
 
     usersCollectionRef.doc(userId.toString()).get().then(querySnapshot => {
         if (querySnapshot.exists) {
-            /* Obtengo la room en la firestore. */
+            /* Obtengo la room en la base de datos. */
             roomsCollectionRef.doc(roomId).get().then(querySnapshot => {
                 /* Obtengo la room en firebase. */
                 const rtRoomRef = rtdb.ref("rooms/" + querySnapshot.get("firebaseId"));
-                /* Una vez que obtengo la room, le saco captura para poder ver los childs que tiene hasta el momento. */
                 rtRoomRef.once("value").then(snapshot => {
                     const owner = snapshot.val().owner;
                     const history = snapshot.val().history;
-                    /* Obtengo los players. */
                     const playersVal = snapshot.val().currentGame;
                     /* Verifico si la sala está disponible o llena, si en la sala hay mas de 2 jugadores, chequea si el "guest" soy yo o es otra persona.
                     Si coincide mi "userName" con el invitado de la partida, me deja unirme. */
-                    if (Object.keys(playersVal).length > 2 && Object.keys(playersVal).includes(userId.toString()) === false) {
+                    if (Object.keys(playersVal).length > 1 && Object.keys(playersVal).includes(userId.toString()) === false) {
                         res.status(401).json({
                             message: "La sala está llena."
                         });
@@ -163,9 +160,9 @@ app.post("/rooms/:roomId", (req, res) => {
     });
 });
 
-/* Accedo a una room para cambiar el estado de ready a true e inicializar la "play" con un string vacío por si tenía una jugada ya escrita, 
+/* Accedo a una room para cambiar el estado de ready e inicializar la "play" con un string vacío por si tenía una jugada ya escrita, 
      pidiendo como requisito el id del usuario y el id corto de la base de datos. */
-app.post("/rooms/:roomId/ready", (req, res) => {
+app.put("/rooms/:roomId/ready", (req, res) => {
     const { userId, ready } = req.body;
     const { roomId } = req.params;
 
@@ -197,16 +194,15 @@ app.post("/rooms/:roomId/ready", (req, res) => {
 });
 
 
-/* Accedo a la room para cambiar la "play" y cambiar el estado de "ready" a false para que no se inicie el juego automáticamente, pidiendo
-como requisito el id largo de la base de datos realtime, el id de usuario y obviamente la jugada a cambiar. En este caso
-no verifico si existe el usuario o la room para que el cambio sea rápido y pueda hacerse dentro de los 3 segundos. */
-app.post("/rooms/:roomId/play", (req, res) => {
+/* Accedo a la room para cambiar la "play", pidiendo como requisito el id largo de la base 
+     de datos realtime, el id de usuario y obviamente la jugada a cambiar. En este caso no verifico si existe 
+         el usuario o la room para que el cambio sea lo más rápido posible y pueda hacerse dentro de los 3 segundos. */
+app.put("/rooms/:roomId/play", (req, res) => {
     const { firebaseId, userId, play } = req.body;
 
     const rtdbRoomRef = rtdb.ref("rooms/" + firebaseId + "/currentGame/" + userId);
     rtdbRoomRef.update({
         play,
-        ready: false
     }).then(() => {
         res.status(202).json({
             message: "Cambio realizado correctamente."
@@ -214,6 +210,7 @@ app.post("/rooms/:roomId/play", (req, res) => {
     });
 });
 
+/* Pusheo el historial de la firebase pidiendo como requisito el id del usuario, del oponente y la jugada de ambos. */
 app.post("/rooms/:roomId/history", (req, res) => {
     const { userId, opponentId, userPlay, opponentPlay } = req.body;
     const { roomId } = req.params;
@@ -233,6 +230,7 @@ app.post("/rooms/:roomId/history", (req, res) => {
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
+
 app.use(express.static(path.join(__dirname, "../dist")));
 
 app.listen(port, () => {

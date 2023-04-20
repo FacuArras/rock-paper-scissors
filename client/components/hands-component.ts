@@ -58,6 +58,7 @@ class HandsComponent extends HTMLElement {
                 right: 0;
                 left: 0;
                 cursor: pointer;
+                overflow: hidden;
             }
             @media(max-height:750px){
                 .menuHands {

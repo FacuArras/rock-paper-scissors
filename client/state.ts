@@ -10,6 +10,7 @@ const state = {
         mail: "",
         userId: "",
         online: false,
+        error: "",
         currentGame: {
             roomId: "",
             firebaseId: "",
@@ -184,20 +185,19 @@ const state = {
             }).then(res => {
                 if (res.status === 401) {
                     console.error("La sala ya está llena");
+                    currentState.error = "La sala de juego está llena...";
+                    this.setState(currentState);
                 } else {
                     return res.json();
-                }
+                };
             }).then(data => {
+                callback();
                 currentState.currentGame.firebaseId = data.firebaseId;
                 currentState.currentGame.opponentName = data.opponentName;
                 currentState.currentGame.opponentId = data.opponentId;
                 currentState.currentGame.owner = data.owner;
                 currentState.history = [...Object.values(data.history)]
                 this.setState(currentState);
-
-                if (callback) {
-                    callback();
-                };
             });
         } else {
             console.error("El usuario no inició sesión correctamente.");
@@ -275,7 +275,7 @@ const state = {
 
         if (currentState.userId && currentState.currentGame.roomId) {
             fetch(API_BASE_URL + "/rooms/" + currentState.currentGame.roomId + "/ready", {
-                method: "post",
+                method: "put",
                 headers: {
                     "content-type": "application/json"
                 },
@@ -300,7 +300,7 @@ const state = {
 
         if (currentState.currentGame.firebaseId, currentState.userId) {
             fetch(API_BASE_URL + "/rooms/" + currentState.currentGame.roomId + "/play", {
-                method: "post",
+                method: "put",
                 headers: {
                     "content-type": "application/json"
                 },
